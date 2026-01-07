@@ -4,7 +4,7 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { addItem } from "components/cart/actions";
 import { Product, ProductVariant } from "lib/shopify/types";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useActionState } from "react";
 import { useCart } from "./cart-context";
 
@@ -60,6 +60,7 @@ function SubmitButton({
 export function AddToCart({ product }: { product: Product }) {
   const { variants, availableForSale } = product;
   const { addCartItem } = useCart();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [message, formAction] = useActionState(addItem, null);
 
@@ -79,7 +80,8 @@ export function AddToCart({ product }: { product: Product }) {
     <form
       action={async () => {
         addCartItem(finalVariant, product);
-        addItemAction();
+        await addItemAction();
+        router.refresh();
       }}
     >
       <SubmitButton
