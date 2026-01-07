@@ -4,7 +4,6 @@ import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { updateItemQuantity } from "components/cart/actions";
 import type { CartItem } from "lib/shopify/types";
-import { useRouter } from "next/navigation";
 import { useActionState } from "react";
 
 function SubmitButton({ type }: { type: "plus" | "minus" }) {
@@ -39,7 +38,6 @@ export function EditItemQuantityButton({
   type: "plus" | "minus";
   optimisticUpdate: any;
 }) {
-  const router = useRouter();
   const [message, formAction] = useActionState(updateItemQuantity, null);
   const payload = {
     merchandiseId: item.merchandise.id,
@@ -51,8 +49,7 @@ export function EditItemQuantityButton({
     <form
       action={async () => {
         optimisticUpdate(payload.merchandiseId, type);
-        await updateItemQuantityAction();
-        router.refresh();
+        updateItemQuantityAction();
       }}
     >
       <SubmitButton type={type} />
