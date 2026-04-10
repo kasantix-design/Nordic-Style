@@ -1,60 +1,84 @@
-import CartModal from "components/cart/modal";
-import LogoSquare from "components/logo-square";
-import { getMenu } from "lib/shopify";
-import { Menu } from "lib/shopify/types";
-import Link from "next/link";
-import { Suspense } from "react";
-import MobileMenu from "./mobile-menu";
-import Search, { SearchSkeleton } from "./search";
+'use client';
 
-const { SITE_NAME } = process.env;
+import { useState, useEffect, Suspense } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import Search from './search';
+import Cart from './cart';
+import OpenCart from './cart/open-cart';
+import MobileMenu from './mobile-menu';
 
-export async function Navbar() {
-  const menu = await getMenu("next-js-frontend-header-menu");
+export default function Navbar() {
+  const [isSolid, setIsSolid] = useState(false);
+  const pathname = usePathname();
+
+  // الصفحات الملكية (شفاف في البداية)
+  const isSpecialPage = pathname === '/shop' || pathname === '/search' || pathname.startsWith('/category') || pathname === '/';
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // يتحول لصلب بعد 500 بيكسل
+      if (window.scrollY > 500) {
+        setIsSolid(true);
+      } else {
+        setIsSolid(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const isTransparent = isSpecialPage && !isSolid;
+  const navStyles = isTransparent 
+    ? "bg-transparent text-white border-transparent" 
+    : "bg-white text-black shadow-md border-b border-gray-100";
 
   return (
-    <nav className="relative flex items-center justify-between p-4 lg:px-6">
-      <div className="block flex-none md:hidden">
-        <Suspense fallback={null}>
-          <MobileMenu menu={menu} />
-        </Suspense>
-      </div>
-      <div className="flex w-full items-center">
-        <div className="flex w-full md:w-1/3">
-          <Link
-            href="/"
-            prefetch={true}
-            className="mr-2 flex w-full items-center justify-center md:w-auto lg:mr-6"
-          >
-            <LogoSquare />
-            <div className="ml-2 flex-none text-sm font-medium uppercase md:hidden lg:block">
-              {SITE_NAME}
-            </div>
-          </Link>
-          {menu.length ? (
-            <ul className="hidden gap-6 text-sm md:flex md:items-center">
-              {menu.map((item: Menu) => (
-                <li key={item.title}>
-                  <Link
-                    href={item.path}
-                    prefetch={true}
-                    className="text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
-                  >
-                    {item.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          ) : null}
+    <nav className={`fixed top-0 z-50 w-full transition-all duration-500 ease-in-out ${navStyles}`}>
+      <div className="mx-auto flex h-20 items-center justify-between px-4 lg:px-12">
+        
+        {/* اليسار: الرجوع والمنيو */}
+        <div className="flex items-center gap-4">
+          <button onClick={() => window.history.back()} className="hover:scale-110 transition">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+          <div className="md:hidden">
+            <Suspense fallback={null}>
+              <MobileMenu menu={[]} /> 
+            </Suspense>
+          </div>
         </div>
-        <div className="hidden justify-center md:flex md:w-1/3">
-          <Suspense fallback={<SearchSkeleton />}>
-            <Search />
+
+        {/* المنتصف: اللوجو */}
+        <div className="absolute left-1/2 -translate-x-1/2">
+          <Link href="/">
+            <img 
+              src="/logo.png" 
+              alt="Buylnk" 
+              className={`h-10 w-auto transition-all ${isTransparent ? 'brightness-0 invert' : ''}`} 
+            />
+          </Link>
+        </div>
+
+        {/* اليمين: البحث والسلة والحساب */}
+        <div className="flex items-center gap-2 md:gap-6">
+          <div className="hidden md:block w-64">
+            <Suspense fallback={null}>
+              <Search />
+            </Suspense>
+          </div>
+          <Link href="/account" className="hidden md:block hover:text-blue-600 transition">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 7a4 4 0 110-8 4 4 0 010 8z" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </Link>
+          <Suspense fallback={<OpenCart />}>
+            <Cart />
           </Suspense>
         </div>
-        <div className="flex justify-end md:w-1/3">
-          <CartModal />
-        </div>
+
       </div>
     </nav>
   );
