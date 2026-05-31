@@ -2,19 +2,14 @@ import { CartProvider } from "components/cart/cart-context";
 import { Navbar } from "components/layout/navbar";
 import { WelcomeToast } from "components/welcome-toast";
 import { GeistSans } from "geist/font/sans";
-import { getCart } from "lib/shopify";
 import { ReactNode } from "react";
 import { Toaster } from "sonner";
 import "./globals.css";
-import { baseUrl } from "lib/utils";
-
-const { SITE_NAME } = process.env;
 
 export const metadata = {
-  metadataBase: new URL(baseUrl),
   title: {
-    default: SITE_NAME!,
-    template: `%s | ${SITE_NAME}`,
+    default: "Nordic Style",
+    template: "%s | Nordic Style",
   },
   robots: {
     follow: true,
@@ -22,18 +17,18 @@ export const metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: ReactNode;
 }) {
-  // Don't await the fetch, pass the Promise to the context provider
-  const cart = getCart();
+  // Tom handlekurv inntil vi kobler til Supabase i Bolk 2
+  const cartPromise = Promise.resolve(null);
 
   return (
-    <html lang="en" className={GeistSans.variable}>
+    <html lang="no" className={GeistSans.variable}>
       <body className="bg-neutral-50 text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white">
-        <CartProvider cartPromise={cart}>
+        <CartProvider cartPromise={cartPromise}>
           <Navbar />
           <main>
             {children}
