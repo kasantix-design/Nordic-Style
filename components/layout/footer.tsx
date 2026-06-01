@@ -1,5 +1,4 @@
 import Link from "next/link";
-import LogoSquare from "./logo-square";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -9,7 +8,8 @@ export default function Footer() {
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 md:flex-row md:gap-12 md:px-4">
         <div>
           <Link href="/" className="flex items-center gap-2 text-neutral-900 dark:text-white">
-            <LogoSquare size="sm" />
+            {/* Placeholder for logo - erstatt med SVG eller bilde senere */}
+            <span className="text-xl font-bold tracking-tight">NS</span>
             <span className="font-medium uppercase">Nordic Style</span>
           </Link>
         </div>
