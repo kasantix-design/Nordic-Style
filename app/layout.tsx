@@ -5,6 +5,7 @@ import { ReactNode } from "react";
 import { Toaster } from "sonner";
 import "./globals.css";
 
+
 export const metadata = {
   title: {
     default: "Nordic Style",
@@ -32,7 +33,7 @@ export default function RootLayout({
           <main>
             {children}
             <Toaster closeButton />
-            {/* <WelcomeToast /> er fjernet siden filen er slettet */}
+           
           </main>
         </CartProvider>
       </body>
