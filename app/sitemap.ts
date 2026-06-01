@@ -1,52 +1,32 @@
-import { getCollections, getPages, getProducts } from "lib/shopify";
-import { baseUrl, validateEnvironmentVariables } from "lib/utils";
 import { MetadataRoute } from "next";
 
-type Route = {
-  url: string;
-  lastModified: string;
-};
-
-export const dynamic = "force-dynamic";
-
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  validateEnvironmentVariables();
+  const baseUrl = "https://nordic-style.vercel.app"; // Bytt ut med din faktiske Vercel-URL hvis forskjellig
 
-  const routesMap = [""].map((route) => ({
-    url: `${baseUrl}${route}`,
-    lastModified: new Date().toISOString(),
-  }));
+  // Fast liste over sider som alltid finnes
+  const staticRoutes: MetadataRoute.Sitemap = [
+    {
+      url: baseUrl,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 1,
+    },
+    {
+      url: `${baseUrl}/journal`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/journal/valget-av-ull`, // Eksempel på en artikkel (kan fjernes eller oppdateres senere)
+      lastModified: new Date(),
+      changeFrequency: "yearly",
+      priority: 0.5,
+    },
+  ];
 
-  const collectionsPromise = getCollections().then((collections) =>
-    collections.map((collection) => ({
-      url: `${baseUrl}${collection.path}`,
-      lastModified: collection.updatedAt,
-    })),
-  );
-
-  const productsPromise = getProducts({}).then((products) =>
-    products.map((product) => ({
-      url: `${baseUrl}/product/${product.handle}`,
-      lastModified: product.updatedAt,
-    })),
-  );
-
-  const pagesPromise = getPages().then((pages) =>
-    pages.map((page) => ({
-      url: `${baseUrl}/${page.handle}`,
-      lastModified: page.updatedAt,
-    })),
-  );
-
-  let fetchedRoutes: Route[] = [];
-
-  try {
-    fetchedRoutes = (
-      await Promise.all([collectionsPromise, productsPromise, pagesPromise])
-    ).flat();
-  } catch (error) {
-    throw JSON.stringify(error, null, 2);
-  }
-
-  return [...routesMap, ...fetchedRoutes];
+  // Merk: For å inkludere alle produkter dynamisk, må vi koble til Supabase her.
+  // Foreløpig returnerer vi kun de faste sidene for å unngå byggefeil.
+  
+  return staticRoutes;
 }
