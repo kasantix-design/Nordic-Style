@@ -1,77 +1,38 @@
 import Link from "next/link";
+import LogoSquare from "./logo-square";
 
-import FooterMenu from "components/layout/footer-menu";
-import LogoSquare from "components/logo-square";
-import { getMenu } from "lib/shopify";
-import { Suspense } from "react";
-
-const { COMPANY_NAME, SITE_NAME } = process.env;
-
-export default async function Footer() {
+export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const copyrightDate = 2023 + (currentYear > 2023 ? `-${currentYear}` : "");
-  const skeleton =
-    "w-full h-6 animate-pulse rounded-sm bg-neutral-200 dark:bg-neutral-700";
-  const menu = await getMenu("next-js-frontend-footer-menu");
-  const copyrightName = COMPANY_NAME || SITE_NAME || "";
 
   return (
-    <footer className="text-sm text-neutral-500 dark:text-neutral-400">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 border-t border-neutral-200 px-6 py-12 text-sm md:flex-row md:gap-12 md:px-4 min-[1320px]:px-0 dark:border-neutral-700">
+    <footer className="border-t border-neutral-200 bg-white py-12 text-sm text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 md:flex-row md:gap-12 md:px-4">
         <div>
-          <Link
-            className="flex items-center gap-2 text-black md:pt-1 dark:text-white"
-            href="/"
-          >
+          <Link href="/" className="flex items-center gap-2 text-neutral-900 dark:text-white">
             <LogoSquare size="sm" />
-            <span className="uppercase">{SITE_NAME}</span>
+            <span className="font-medium uppercase">Nordic Style</span>
           </Link>
         </div>
-        <Suspense
-          fallback={
-            <div className="flex h-[188px] w-[200px] flex-col gap-2">
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-            </div>
-          }
-        >
-          <FooterMenu menu={menu} />
-        </Suspense>
+        
         <div className="md:ml-auto">
-          <a
-            className="flex h-8 w-max flex-none items-center justify-center rounded-md border border-neutral-200 bg-white text-xs text-black dark:border-neutral-700 dark:bg-black dark:text-white"
-            aria-label="Deploy on Vercel"
-            href="https://vercel.com/templates/next.js/nextjs-commerce"
-          >
-            <span className="px-3">▲</span>
-            <hr className="h-full border-r border-neutral-200 dark:border-neutral-700" />
-            <span className="px-3">Deploy</span>
-          </a>
+          <p className="mb-2 font-medium text-neutral-900 dark:text-white">Meny</p>
+          <ul className="space-y-2">
+            <li><Link href="/" className="hover:text-neutral-900 dark:hover:text-white">Hjem</Link></li>
+            <li><Link href="/journal" className="hover:text-neutral-900 dark:hover:text-white">Journal</Link></li>
+            <li><Link href="/about" className="hover:text-neutral-900 dark:hover:text-white">Om oss</Link></li>
+          </ul>
+        </div>
+
+        <div className="md:ml-auto">
+          <p className="mb-2 font-medium text-neutral-900 dark:text-white">Kontakt</p>
+          <ul className="space-y-2">
+            <li><a href="mailto:info@nordicstyle.no" className="hover:text-neutral-900 dark:hover:text-white">info@nordicstyle.no</a></li>
+          </ul>
         </div>
       </div>
-      <div className="border-t border-neutral-200 py-6 text-sm dark:border-neutral-700">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-1 px-4 md:flex-row md:gap-0 md:px-4 min-[1320px]:px-0">
-          <p>
-            &copy; {copyrightDate} {copyrightName}
-            {copyrightName.length && !copyrightName.endsWith(".")
-              ? "."
-              : ""}{" "}
-            All rights reserved.
-          </p>
-          <hr className="mx-4 hidden h-4 w-[1px] border-l border-neutral-400 md:inline-block" />
-          <p>
-            <a href="https://github.com/vercel/commerce">View the source</a>
-          </p>
-          <p className="md:ml-auto">
-            <a href="https://vercel.com" className="text-black dark:text-white">
-              Created by ▲ Vercel
-            </a>
-          </p>
-        </div>
+
+      <div className="border-t border-neutral-200 py-6 text-center text-xs dark:border-neutral-800">
+        <p>&copy; {currentYear} Nordic Style. All rights reserved.</p>
       </div>
     </footer>
   );
