@@ -25,6 +25,7 @@ export default function RootLayout({
   // Tom handlekurv inntil vi kobler til Supabase i Bolk 2
   const cartPromise = Promise.resolve(null);
 
+  
   return (
     <html lang="no" className={GeistSans.variable}>
       <body className="bg-neutral-50 text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white">
