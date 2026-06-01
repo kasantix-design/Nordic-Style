@@ -18,10 +18,10 @@ export function AddToCart({ product }: AddToCartProps) {
   const { addItem } = useCart();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = () => {
     setIsLoading(true);
     try {
-      await addItem(product);
+      addItem({ ...product, quantity: 1 });
     } catch (error) {
       console.error("Failed to add to cart:", error);
     } finally {
