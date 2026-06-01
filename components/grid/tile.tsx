@@ -1,50 +1,30 @@
 import clsx from "clsx";
-import Image from "next/image";
-import Label from "../label";
 
-export function GridTileImage({
-  isInteractive = true,
-  active,
-  label,
-  ...props
-}: {
-  isInteractive?: boolean;
-  active?: boolean;
-  label?: {
-    title: string;
-    amount: string;
-    currencyCode: string;
-    position?: "bottom" | "center";
-  };
-} & React.ComponentProps<typeof Image>) {
+interface LabelProps {
+  title: string;
+  amount: string;
+  currencyCode: string;
+  position?: "bottom" | "center";
+}
+
+export default function Label({
+  title,
+  amount,
+  currencyCode,
+  position = "bottom",
+}: LabelProps) {
   return (
     <div
       className={clsx(
-        "group flex h-full w-full items-center justify-center overflow-hidden rounded-lg border bg-white hover:border-blue-600 dark:bg-black",
+        "absolute z-10 flex items-center rounded-md bg-black px-2 py-1 text-xs text-white",
         {
-          relative: label,
-          "border-2 border-blue-600": active,
-          "border-neutral-200 dark:border-neutral-800": !active,
-        },
+          "bottom-2 left-2": position === "bottom",
+          "left-2 top-2": position === "center",
+        }
       )}
     >
-      {props.src ? (
-        <Image
-          className={clsx("relative h-full w-full object-contain", {
-            "transition duration-300 ease-in-out group-hover:scale-105":
-              isInteractive,
-          })}
-          {...props}
-        />
-      ) : null}
-      {label ? (
-        <Label
-          title={label.title}
-          amount={label.amount}
-          currencyCode={label.currencyCode}
-          position={label.position}
-        />
-      ) : null}
+      <span className="mr-1 font-semibold">{title}</span>
+      <span>{amount} {currencyCode}</span>
     </div>
   );
 }
