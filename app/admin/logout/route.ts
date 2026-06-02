@@ -1,9 +1,31 @@
-import { createServerRouteHandler } from "@supabase/auth-helpers-nextjs";
+import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-export const POST = createServerRouteHandler(async () => {
-  const supabase = createServerRouteHandler({ cookies });
+export async function POST(request: Request) {
+  const cookieStore = cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            );
+          } catch {
+            // Ignore
+          }
+        },
+      },
+    }
+  );
+
   await supabase.auth.signOut();
-  return NextResponse.redirect(new URL("/admin/login", process.env.NEXT_PUBLIC_VERCEL_URL || "http://localhost:3000"));
-});
+
+  return NextResponse.redirect(new URL("/admin/login", request.url));
+}
