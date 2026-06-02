@@ -1,43 +1,12 @@
 import Link from "next/link";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { usePathname } from "next/navigation";
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname(); // Vi trenger pathname for å sjekke om vi er på login
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet: any[]) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {
-            // Ignore if we are in a browser context
-          }
-        },
-      },
-    }
-  );
-
-  const { data: { user } } = await supabase.auth.getUser();
-
-  // KUN redirect hvis vi IKKE er på login-siden og ikke er logget inn
-  if (!user && pathname !== '/admin/login') {
-    redirect("/admin/login");
-  }
+  // Auth-sjekk er håndtert av middleware.ts
+  // Layouten trenger ikke sjekke auth selv
 
   return (
     <div className="flex min-h-screen flex-col bg-neutral-50">
