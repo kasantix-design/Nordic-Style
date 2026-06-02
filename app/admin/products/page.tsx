@@ -1,14 +1,36 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import Link from "next/link";
 
 export default async function ProductsPage() {
-  const supabase = createServerComponentClient({ cookies });
+  const cookieStore = cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            );
+          } catch {
+            // Ignore
+          }
+        },
+      },
+    }
+  );
+
   const { data: products } = await supabase
     .from("products")
     .select("id, title, handle, price, created_at")
     .order("created_at", { ascending: false });
 
+  // ... (resten av koden er den samme)
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
@@ -41,7 +63,6 @@ export default async function ProductsPage() {
                   <Link href={`/admin/products/${product.id}/edit`} className="text-indigo-600 hover:text-indigo-900 mr-4">
                     Rediger
                   </Link>
-                  {/* Slett-knapp kommer senere */}
                 </td>
               </tr>
             ))}
