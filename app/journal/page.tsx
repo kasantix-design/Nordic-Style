@@ -1,15 +1,13 @@
 import Footer from "components/layout/footer";
 import Link from "next/link";
-import { getAllArticles } from "lib/articles";
+import { getAllArticles } from "@/lib/articles";
 
 export const metadata = {
   title: "Journal | Nordic Style",
   description: "Artikler om design, materialer og håndverk. Les historien bak klærne våre.",
 };
 
-// Gjør funksjonen async for å kunne hente data fra database
 export default async function JournalPage() {
-  // HENT DATA FRA DATABASEN
   const articles = await getAllArticles();
 
   return (
@@ -32,7 +30,6 @@ export default async function JournalPage() {
       <section className="bg-white py-24 px-6 md:px-20 lg:px-40">
         <div className="mx-auto max-w-6xl">
           
-          {/* Hvis det ikke er noen artikler enda */}
           {articles.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-lg text-neutral-500">
@@ -63,7 +60,6 @@ export default async function JournalPage() {
                     {article.title}
                   </h2>
                   <p className="mt-4 text-base font-light leading-relaxed text-neutral-600">
-                    {/* Vi bruker subtitle som excerpt for nå, eller første avsnitt hvis du vil */}
                     {article.subtitle || "Les mer om denne historien..."}
                   </p>
                 </Link>
