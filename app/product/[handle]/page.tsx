@@ -1,7 +1,8 @@
 import Footer from "components/layout/footer";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { getProduct } from "lib/products";
+import { getProduct } from "@/lib/products";
+import { AddToCart } from "@/components/product/add-to-cart";
 
 // --- 1. SEO Metadata ---
 export async function generateMetadata(props: {
@@ -29,10 +30,8 @@ export default async function ProductPage(props: {
 }) {
   const params = await props.params;
   
-  // HENT DATA FRA DATABASEN (IKKE HARDKODED)
   const product = await getProduct(params.handle);
 
-  // Hvis produktet ikke finnes, vis 404
   if (!product) return notFound();
 
   // Sikre at arrays finnes for å unngå feil
@@ -140,9 +139,14 @@ export default async function ProductPage(props: {
             </div>
 
             <div className="mb-8 space-y-4">
-              <button className="w-full bg-neutral-900 py-4 text-sm uppercase tracking-widest text-white transition-colors hover:bg-neutral-700">
-                Legg i handlekurv
-              </button>
+              <AddToCart 
+                product={{
+                  id: product.id,
+                  title: product.title,
+                  price: product.price,
+                  image: images[0]?.src || images[0],
+                }} 
+              />
               <div className="flex justify-center gap-4 text-xs text-neutral-500">
                 <span>Gratis frakt over 2000,-</span>
                 <span>•</span>
