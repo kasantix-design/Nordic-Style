@@ -49,5 +49,5 @@ export async function middleware(request: NextRequest) {
 
 // Midlertidig slått av for å fikse redirect-loop
 export const config = {
-  matcher: [], 
+  matcher: ['/admin/:path*'],
 }
