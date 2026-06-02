@@ -2,12 +2,14 @@ import Link from "next/link";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname(); // Vi trenger pathname for å sjekke om vi er på login
   const cookieStore = await cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -32,7 +34,8 @@ export default async function AdminLayout({
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) {
+  // KUN redirect hvis vi IKKE er på login-siden og ikke er logget inn
+  if (!user && pathname !== '/admin/login') {
     redirect("/admin/login");
   }
 
