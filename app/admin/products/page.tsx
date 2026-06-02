@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 
 export default async function ProductsPage() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -12,7 +12,7 @@ export default async function ProductsPage() {
         getAll() {
           return cookieStore.getAll();
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: any[]) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
@@ -30,7 +30,6 @@ export default async function ProductsPage() {
     .select("id, title, handle, price, created_at")
     .order("created_at", { ascending: false });
 
-  // ... (resten av koden er den samme)
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
