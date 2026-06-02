@@ -36,12 +36,10 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Hvis brukeren prøver å gå til /admin og ikke er logget inn -> send til login
   if (request.nextUrl.pathname.startsWith('/admin') && !user) {
     return NextResponse.redirect(new URL('/admin/login', request.url))
   }
 
-  // Hvis brukeren er logget inn og prøver å gå til /admin/login -> send til dashboard
   if (request.nextUrl.pathname === '/admin/login' && user) {
     return NextResponse.redirect(new URL('/admin', request.url))
   }
