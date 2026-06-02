@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useCart } from "../cart/cart-context";
-import { useState } from "react";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 
 export function Navbar() {
