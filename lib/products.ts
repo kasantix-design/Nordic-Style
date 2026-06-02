@@ -1,6 +1,6 @@
-import { supabase } from './supabase';
+import { supabase } from '@/lib/supabase';
 
-// Type-definisjon for et produkt (må matche databasen din)
+// Type-definisjon for et produkt
 export interface Product {
   id: string;
   handle: string;
@@ -10,20 +10,19 @@ export interface Product {
   description: string;
   philosophy: string;
   construction_title: string;
-  construction_points: any[]; // JSON array
+  construction_points: any[];
   material_name: string;
   material_origin: string;
   material_story: string;
-  images: any[]; // JSON array med { src, alt }
-  variants: any[]; // JSON array med { size, inStock }
+  images: any[];
+  variants: any[];
   seo_title: string;
   seo_description: string;
   created_at: string;
 }
 
 /**
- * Henter et enkelt produkt basert på "handle" (URL-navn).
- * Dette brukes i app/product/[handle]/page.tsx
+ * Henter et enkelt produkt basert på "handle".
  */
 export async function getProduct(handle: string): Promise<Product | null> {
   const { data, error } = await supabase
@@ -41,7 +40,7 @@ export async function getProduct(handle: string): Promise<Product | null> {
 }
 
 /**
- * Henter alle produkter (for fremtidig bruk, f.eks. i en kolleksjonsside).
+ * Henter alle produkter.
  */
 export async function getAllProducts(): Promise<Product[]> {
   const { data, error } = await supabase
