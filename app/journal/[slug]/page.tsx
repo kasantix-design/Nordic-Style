@@ -1,7 +1,7 @@
 import Footer from "components/layout/footer";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getArticleBySlug } from "lib/articles";
+import { getArticleBySlug } from "@/lib/articles";
 
 // --- 1. SEO Metadata ---
 export async function generateMetadata(props: {
@@ -24,10 +24,8 @@ export default async function JournalArticlePage(props: {
 }) {
   const params = await props.params;
   
-  // HENT DATA FRA DATABASEN ISTEDET FOR FASTKODING
   const article = await getArticleBySlug(params.slug);
 
-  // Hvis artikkelen ikke finnes, vis 404-siden
   if (!article) return notFound();
 
   return (
@@ -60,7 +58,6 @@ export default async function JournalArticlePage(props: {
       <section className="bg-white py-24 px-6 md:px-20 lg:px-40">
         <div className="mx-auto max-w-2xl">
           {article.sections.map((section: any, index: number) => {
-            // Avsnitt
             if (section.type === "paragraph") {
               return (
                 <p 
@@ -72,7 +69,6 @@ export default async function JournalArticlePage(props: {
               );
             }
 
-            // Bilde med bildetekst
             if (section.type === "image") {
               return (
                 <figure key={index} className="mb-16 -mx-6 md:-mx-20 lg:-mx-40">
@@ -90,7 +86,6 @@ export default async function JournalArticlePage(props: {
               );
             }
 
-            // Sitat
             if (section.type === "quote") {
               return (
                 <blockquote 
@@ -104,7 +99,6 @@ export default async function JournalArticlePage(props: {
               );
             }
 
-            // Prosess-tidslinje (Behind the Scenes)
             if (section.type === "process" && section.steps) {
               return (
                 <div key={index} className="my-16 border-t border-neutral-200 pt-16">
